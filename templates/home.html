@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h2>Real-Time Stock Market Data</h2>
+<canvas id="stockChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('stockChart').getContext('2d');
+    const stockChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Stock Price',
+                data: [],
+                borderColor: 'blue',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                fill: true,
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: 'Time' } },
+                y: { title: { display: true, text: 'Price' } }
+            }
+        }
+    });
+
+    function updateChart() {
+        fetch('/stock-data') // AJAX Call to Fetch Latest Data
+            .then(response => response.json())
+            .then(data => {
+                stockChart.data.labels = data.times;
+                stockChart.data.datasets[0].data = data.prices;
+                stockChart.update();
+            });
+    }
+
+    setInterval(updateChart, 5000); // Update every 5 seconds
+</script>
+<h2>News Feed</h2>
+<ul id="newsFeed"></ul>
+
+<script>
+    function loadNews() {
+        fetch('/news-feed')
+            .then(response => response.json())
+            .then(data => {
+                const newsFeed = document.getElementById('newsFeed');
+                newsFeed.innerHTML = '';
+                data.forEach(news => {
+                    newsFeed.innerHTML += `<li><a href="${news.link}" target="_blank">${news.title}</a></li>`;
+                });
+            });
+    }
+
+    loadNews();
+    setInterval(loadNews, 60000); // Refresh every 60 seconds
+</script>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<h2>Settings</h2>
+<form method="POST" action="{{ url_for('settings') }}">
+    <label for="theme">Theme:</label>
+    <select name="theme">
+    <option value="light" {% if user.theme == 'light' %}selected{% endif %}>Light</option>
+    <option value="dark" {% if user.theme == 'dark' %}selected{% endif %}>Dark</option>
+    <option value="blue" {% if user.theme == 'blue' %}selected{% endif %}>Blue</option>
+    <option value="green" {% if user.theme == 'green' %}selected{% endif %}>Green</option>
+</select>
+
+    <input type="submit" value="Save Settings" />
+</form>
+{% endblock %}
